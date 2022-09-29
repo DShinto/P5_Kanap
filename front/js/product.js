@@ -6,6 +6,7 @@ const UrlCanape = new URLSearchParams(requeteUrlId);
 
 //variable contenant l'Id
 const canapeId = UrlCanape.get("id");
+console.log(canapeId);
 
 //Fonction asynchrone pour appeler l'api/products/id
 async function getCanapesId() {
@@ -43,15 +44,42 @@ function genererProductId(data) {
 // Appel de la promesse et génération de la fiche
 getCanapesId().then((data) => genererProductId(data));
 
-function addCart() {
-    const id = canapeId;
-    console.log(id);
-    const color = document.querySelector("#colors").value;
-    console.log(color);
-    const quantity = document.querySelector("#quantity").value;
-    console.log(quantity);
-}
-
+//! eventlistenner pour ecouter le bouton "Ajouter au panier"
 const buttonAddCart = document.querySelector("#addToCart");
 
-buttonAddCart.addEventListener("click", addCart);
+buttonAddCart.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    // Récupération des valeurs pour le panier
+    let productCart = {
+        id: canapeId,
+        color: document.querySelector("#colors").value,
+        quantity: document.querySelector("#quantity").value,
+    };
+    console.log(productCart);
+
+    //! stocker la récupération des valeurs dans le local storage
+
+    //* Variable pour implémenter le local storage
+    let productCartLocalStorage = JSON.parse(localStorage.getItem("produit"));
+    console.log(productCartLocalStorage);
+
+    //* Fonction ajouter un produit dans LS
+    const addProductLocaltorage = () => {
+        productCartLocalStorage.push(productCart);
+        localStorage.setItem(
+            "produit",
+            JSON.stringify(productCartLocalStorage)
+        );
+    };
+
+    //! Si il y a déjà des produits dans le LS
+    if (productCartLocalStorage) {
+        addProductLocaltorage();
+        console.log(productCartLocalStorage);
+    } else {
+        productCartLocalStorage = [];
+        addProductLocaltorage();
+    }
+    console.log(productCartLocalStorage);
+});
