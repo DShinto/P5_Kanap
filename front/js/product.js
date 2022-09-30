@@ -8,6 +8,7 @@ const UrlCanape = new URLSearchParams(requeteUrlId);
 const canapeId = UrlCanape.get("id");
 console.log(canapeId);
 
+let data = "";
 //Fonction asynchrone pour appeler l'api/products/id
 async function getCanapesId() {
     const response = await fetch(
@@ -15,7 +16,8 @@ async function getCanapesId() {
     );
     // Condition si on atteint bien l'API
     if (response.ok) {
-        return await response.json();
+        data = await response.json();
+        return data;
     } else {
         console.error("retour du serveur : ", response.status);
     }
@@ -50,19 +52,26 @@ const buttonAddCart = document.querySelector("#addToCart");
 buttonAddCart.addEventListener("click", (event) => {
     event.preventDefault();
 
-    // Récupération des valeurs pour le panier
-    let productCart = {
-        id: canapeId,
-        color: document.querySelector("#colors").value,
-        quantity: document.querySelector("#quantity").value,
-    };
-    console.log(productCart);
+    // Variable couleur et quantité qu'on récupère
 
+    let colorEvent = document.querySelector("#colors").value;
+    let quantityEvent = document.querySelector("#quantity").value;
+
+    // Récupération du produit à ajouter dans le panier
+    let productCart = {
+        idCart: canapeId,
+        colorCart: colorEvent,
+        quantityCart: Number(quantityEvent),
+        nomCart: data.name,
+        prixCart: data.price,
+        descriptionCart: data.description,
+        imgCart: data.imageUrl,
+        altTxtCart: data.altTxt,
+    };
     //! stocker la récupération des valeurs dans le local storage
 
     //* Variable pour implémenter le local storage
     let productCartLocalStorage = JSON.parse(localStorage.getItem("produit"));
-    console.log(productCartLocalStorage);
 
     //* Fonction ajouter un produit dans LS
     const addProductLocaltorage = () => {
@@ -75,11 +84,24 @@ buttonAddCart.addEventListener("click", (event) => {
 
     //! Si il y a déjà des produits dans le LS
     if (productCartLocalStorage) {
-        addProductLocaltorage();
-        console.log(productCartLocalStorage);
+        let foundProduct = productCartLocalStorage.find(
+            (p) => p.idCart == canapeId && p.colorCart == colorEvent
+        );
+        if (foundProduct) {
+            let newQuantityCart =
+                parseInt(productCart.quantityCart) +
+                parseInt(foundProduct.quantityCart);
+            foundProduct.quantityCart = newQuantityCart;
+            localStorage.setItem(
+                "produit",
+                JSON.stringify(productCartLocalStorage)
+            );
+        } else {
+            addProductLocaltorage();
+        }
     } else {
         productCartLocalStorage = [];
         addProductLocaltorage();
     }
-    console.log(productCartLocalStorage);
+    console.table(productCartLocalStorage);
 });
