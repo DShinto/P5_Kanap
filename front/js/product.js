@@ -46,7 +46,7 @@ function genererProductId(data) {
 // Appel de la promesse et génération de la fiche
 getCanapesId().then((data) => genererProductId(data));
 
-//! eventlistenner pour ecouter le bouton "Ajouter au panier"
+///! eventlistenner pour ecouter le bouton "Ajouter au panier"
 const buttonAddCart = document.querySelector("#addToCart");
 
 buttonAddCart.addEventListener("click", (event) => {
@@ -57,51 +57,71 @@ buttonAddCart.addEventListener("click", (event) => {
     let colorEvent = document.querySelector("#colors").value;
     let quantityEvent = document.querySelector("#quantity").value;
 
-    // Récupération du produit à ajouter dans le panier
-    let productCart = {
-        idCart: canapeId,
-        colorCart: colorEvent,
-        quantityCart: Number(quantityEvent),
-        nomCart: data.name,
-        prixCart: data.price,
-        descriptionCart: data.description,
-        imgCart: data.imageUrl,
-        altTxtCart: data.altTxt,
-    };
-    //! stocker la récupération des valeurs dans le local storage
+    console.log(colorEvent);
 
-    //* Variable pour implémenter le local storage
-    let productCartLocalStorage = JSON.parse(localStorage.getItem("produit"));
+    if (
+        quantityEvent > 0 &&
+        quantityEvent <= 100 &&
+        quantityEvent != 0 &&
+        colorEvent != ""
+    ) {
+        // Récupération du produit à ajouter dans le panier
+        let productCart = {
+            idCart: canapeId,
+            colorCart: colorEvent,
+            quantityCart: Number(quantityEvent),
+            nomCart: data.name,
+            prixCart: data.price,
+            descriptionCart: data.description,
+            imgCart: data.imageUrl,
+            altTxtCart: data.altTxt,
+        };
 
-    //* Fonction ajouter un produit dans LS
-    const addProductLocaltorage = () => {
-        productCartLocalStorage.push(productCart);
-        localStorage.setItem(
-            "produit",
-            JSON.stringify(productCartLocalStorage)
+        ///! stocker la récupération des valeurs dans le local storage
+
+        ///* Variable pour implémenter le local storage
+        let productCartLocalStorage = JSON.parse(
+            localStorage.getItem("produit")
         );
-    };
 
-    //! Si il y a déjà des produits dans le LS
-    if (productCartLocalStorage) {
-        let foundProduct = productCartLocalStorage.find(
-            (p) => p.idCart == canapeId && p.colorCart == colorEvent
-        );
-        if (foundProduct) {
-            let newQuantityCart =
-                parseInt(productCart.quantityCart) +
-                parseInt(foundProduct.quantityCart);
-            foundProduct.quantityCart = newQuantityCart;
+        ///* Fonction ajouter un produit dans LS
+        const addProductLocaltorage = () => {
+            productCartLocalStorage.push(productCart);
             localStorage.setItem(
                 "produit",
                 JSON.stringify(productCartLocalStorage)
             );
+        };
+
+        ///! Importation dans le LS
+
+        // Si le panier à déjà un produit
+        if (productCartLocalStorage) {
+            let foundProduct = productCartLocalStorage.find(
+                (p) => p.idCart == canapeId && p.colorCart == colorEvent
+            );
+
+            //Si le produit commandé est déjà dans le panier
+            if (foundProduct) {
+                let newQuantityCart =
+                    parseInt(productCart.quantityCart) +
+                    parseInt(foundProduct.quantityCart);
+                foundProduct.quantityCart = newQuantityCart;
+                localStorage.setItem(
+                    "produit",
+                    JSON.stringify(productCartLocalStorage)
+                );
+
+                // Si le produit commandé n'est pas dans le panier
+            } else {
+                addProductLocaltorage();
+            }
+
+            // Si le panier est vide
         } else {
+            productCartLocalStorage = [];
             addProductLocaltorage();
         }
-    } else {
-        productCartLocalStorage = [];
-        addProductLocaltorage();
+        console.table(productCartLocalStorage);
     }
-    console.table(productCartLocalStorage);
 });

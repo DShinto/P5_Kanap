@@ -6,9 +6,8 @@ console.table(productCartLocalStorage);
 const ficheProduitPanier = document.querySelector("#cart__items");
 
 // /* Si le panier est vide afficher le panier est vide
-if (productCartLocalStorage === null) {
+if (productCartLocalStorage === null || productCartLocalStorage == 0) {
     ficheProduitPanier.innerHTML += `<p>Le panier est vide</p>`;
-    console.log(ficheProduitPanier);
 } else {
     // /+ Si le panier n'est pas vide afficher les élémnts du local storage
     let detailFicheProduitPanier = [];
@@ -41,3 +40,36 @@ if (productCartLocalStorage === null) {
         ficheProduitPanier.innerHTML = detailFicheProduitPanier;
     }
 }
+
+// Bouton supprimer
+
+function deleteProduct() {
+    const buttonsDelete = document.querySelectorAll(".deleteItem");
+
+    for (let i = 0; i < buttonsDelete.length; i++) {
+        buttonsDelete[i].addEventListener("click", (e) => {
+            e.preventDefault();
+
+            // Sélection du produit à supprimer
+            let idDelete = productCartLocalStorage[i].idCart;
+            let colorDelete = productCartLocalStorage[i].colorCart;
+            console.log(idDelete);
+            console.log(colorDelete);
+
+            // Suppression des produits par filter
+            productCartLocalStorage = productCartLocalStorage.filter(
+                (el) => el.idCart !== idDelete || el.colorCart !== colorDelete
+            );
+
+            // On envoie dans le LS
+            // Transformation au format JSON
+            localStorage.setItem(
+                "produit",
+                JSON.stringify(productCartLocalStorage)
+            );
+            alert("Ce produit est supprimé du panier");
+            location.reload();
+        });
+    }
+}
+deleteProduct();
