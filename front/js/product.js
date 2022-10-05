@@ -8,7 +8,9 @@ const UrlCanape = new URLSearchParams(requeteUrlId);
 const canapeId = UrlCanape.get("id");
 console.log(canapeId);
 
+// Déclaration de ma variable pour récupérer les produits
 let data = "";
+
 //Fonction asynchrone pour appeler l'api/products/id
 async function getCanapesId() {
     const response = await fetch(
@@ -46,14 +48,14 @@ function genererProductId(data) {
 // Appel de la promesse et génération de la fiche
 getCanapesId().then((data) => genererProductId(data));
 
-///! eventlistenner pour ecouter le bouton "Ajouter au panier"
+// /! eventlistenner pour ecouter le bouton "Ajouter au panier"
 const buttonAddCart = document.querySelector("#addToCart");
 
+// /* Event au click pour ajouter au panier
 buttonAddCart.addEventListener("click", (event) => {
     event.preventDefault();
 
     // Variable couleur et quantité qu'on récupère
-
     let colorEvent = document.querySelector("#colors").value;
     let quantityEvent = document.querySelector("#quantity").value;
 
@@ -77,14 +79,14 @@ buttonAddCart.addEventListener("click", (event) => {
             altTxtCart: data.altTxt,
         };
 
-        ///! stocker la récupération des valeurs dans le local storage
+        // /! stocker la récupération des valeurs dans le local storage
 
-        ///* Variable pour implémenter le local storage
+        // /* Variable pour implémenter le local storage
         let productCartLocalStorage = JSON.parse(
             localStorage.getItem("produit")
         );
 
-        ///* Fonction ajouter un produit dans LS
+        // /* Fonction ajouter un produit dans LS
         const addProductLocaltorage = () => {
             productCartLocalStorage.push(productCart);
             localStorage.setItem(
@@ -93,15 +95,15 @@ buttonAddCart.addEventListener("click", (event) => {
             );
         };
 
-        ///! Importation dans le LS
-
+        // /* Importation dans le LS
         // Si le panier à déjà un produit
         if (productCartLocalStorage) {
+            // Méthode find pour retrouver le produit grâce à l'id et la couleur
             let foundProduct = productCartLocalStorage.find(
                 (p) => p.idCart == canapeId && p.colorCart == colorEvent
             );
 
-            //Si le produit commandé est déjà dans le panier
+            //Si le produit commandé est déjà dans le panier : on ajoute pour avoir la nouvelle quantité
             if (foundProduct) {
                 let newQuantityCart =
                     parseInt(productCart.quantityCart) +

@@ -1,4 +1,4 @@
-// Récupération des données de l'API
+// /* Récupération des données de l'API
 async function getCanapes() {
     const response = await fetch("http://localhost:3000/api/products");
     // Condition si on atteint bien l'API
