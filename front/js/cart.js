@@ -41,8 +41,41 @@ if (productCartLocalStorage === null || productCartLocalStorage == 0) {
     }
 }
 
-// /* Bouton supprimer
+//--------------------------------------------------------------------------
+// /* Affichage du prix total et du nombre d'articles
+// Fonction prix et quantité total
+function totalPriceQuantity() {
+    // Quantité Total
+    let totalQuantityCart = 0;
 
+    // Boucle pour allé chercher les quantités et les concaténés avec +=
+    for (let i = 0; i < productCartLocalStorage.length; i++) {
+        totalQuantityCart += productCartLocalStorage[i].quantityCart;
+        console.log(totalQuantityCart);
+    }
+
+    // On implémente dans l'HTML la valeur
+    const totalQuantity = document.getElementById("totalQuantity");
+    totalQuantity.innerHTML = totalQuantityCart;
+
+    // Prix Total
+    let totalPriceCart = 0;
+
+    // Boucle pour allé chercher les prix et les concaténés avec +=
+    for (let i = 0; i < productCartLocalStorage.length; i++) {
+        totalPriceCart +=
+            productCartLocalStorage[i].quantityCart *
+            productCartLocalStorage[i].prixCart;
+        console.log(totalPriceCart);
+    }
+
+    // On implémente dans l'HTML la valeur
+    const totalPrice = document.getElementById("totalPrice");
+    totalPrice.innerHTML = totalPriceCart;
+}
+totalPriceQuantity();
+//------------------------------------------------------------------------
+// /* Bouton supprimer
 function deleteProduct() {
     // On sélectionne tous les boutons supprimer
     const buttonsDelete = document.querySelectorAll(".deleteItem");
@@ -75,6 +108,7 @@ function deleteProduct() {
 }
 deleteProduct();
 
+//--------------------------------------------------------------------------
 // /* Modification des quantités
 function modifyQuantity() {
     // On sélectionne les inputs
@@ -111,6 +145,7 @@ function modifyQuantity() {
                 JSON.stringify(productCartLocalStorage)
             );
             console.table(productCartLocalStorage);
+            location.reload();
         });
     }
 }
