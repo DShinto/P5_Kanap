@@ -150,3 +150,126 @@ function modifyQuantity() {
     }
 }
 modifyQuantity();
+
+//-------------------------------------------------------------------------------------
+// /* Envoi du formulaire dans le LS et vérivication du formulaire
+function sendFormLocalStorage() {
+    // addEventListener
+    const buttonCommand = document.getElementById("order");
+    buttonCommand.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        // Les valeurs du formulaire
+        class Formulaire {
+            constructor() {
+                this.firstName = document.querySelector("#firstName").value;
+                this.lastName = document.querySelector("#lastName").value;
+                this.address = document.querySelector("#address").value;
+                this.city = document.querySelector("#city").value;
+                this.email = document.querySelector("#email").value;
+            }
+        }
+
+        const formValues = new Formulaire();
+
+        // /* vérification formulaire -------------------------------------------------
+
+        // Déclaration des constantes REGEX
+        const regExName = (value) => {
+            return /^[A-Za-z\s]{2,40}$/.test(value);
+        };
+        const regExAddress = (value) => {
+            return /^[0-9]{1,5}\s+[A-Za-zéèàïêç\-\s]{2,50}$/.test(value);
+        };
+        const regExCity = (value) => {
+            return /^[A-Za-zéèàïêç\-\s]{1,50}\s+[0-9]{5}$/.test(value);
+        };
+        const regExEmail = (value) => {
+            return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value);
+        };
+
+        // fonction pour afficher texte error msg
+        function errorMsgEmpty(idValue) {
+            document.getElementById(`${idValue}`).textContent = "";
+        }
+        function errorMsgWrong(idValue) {
+            document.getElementById(`${idValue}`).textContent =
+                "Veuillez bien remplir ce champ";
+        }
+
+        // /* Fonctions pour la vérification du formulaire----------------------------
+        // contrôle de la validité du prénom
+        function controlFirstName() {
+            const verifyFirstName = formValues.firstName;
+            if (regExName(verifyFirstName)) {
+                errorMsgEmpty("firstNameErrorMsg");
+                return true;
+            } else {
+                errorMsgWrong("firstNameErrorMsg");
+                return false;
+            }
+        }
+
+        // contrôle de la validité du nom
+        function controlLastName() {
+            const verifyLastName = formValues.lastName;
+            if (regExName(verifyLastName)) {
+                errorMsgEmpty("lastNameErrorMsg");
+                return true;
+            } else {
+                errorMsgWrong("lastNameErrorMsg");
+                return false;
+            }
+        }
+
+        // contrôle de la validité de l'adresse
+        function controlAddress() {
+            const verifyAddress = formValues.address;
+            if (regExAddress(verifyAddress)) {
+                errorMsgEmpty("addressErrorMsg");
+                return true;
+            } else {
+                errorMsgWrong("addressErrorMsg");
+                return false;
+            }
+        }
+
+        // contrôle de la validité de la ville
+        function controlCity() {
+            const verifyCity = formValues.city;
+            if (regExCity(verifyCity)) {
+                errorMsgEmpty("cityErrorMsg");
+                return true;
+            } else {
+                errorMsgWrong("cityErrorMsg");
+                return false;
+            }
+        }
+
+        // contrôle de la validité du mail
+        function controlEmail() {
+            const verifyEmail = formValues.email;
+            if (regExEmail(verifyEmail)) {
+                errorMsgEmpty("emailErrorMsg");
+                return true;
+            } else {
+                errorMsgWrong("emailErrorMsg");
+                return false;
+            }
+        }
+
+        if (
+            controlFirstName() &&
+            controlLastName() &&
+            controlEmail() &&
+            controlAddress() &&
+            controlCity()
+        ) {
+            // Mettre formValues dans le LS
+            localStorage.setItem("formValues", JSON.stringify(formValues));
+        } else {
+            alert("formulaire non valide");
+        }
+    });
+}
+sendFormLocalStorage();
