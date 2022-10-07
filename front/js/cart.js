@@ -182,7 +182,9 @@ function sendFormLocalStorage() {
             return /^[0-9]{1,5}\s+[A-Za-zéèàïêç\-\s]{2,50}$/.test(value);
         };
         const regExCity = (value) => {
-            return /^[A-Za-zéèàïêç\-\s]{1,50}\s+[0-9]{5}$/.test(value);
+            return /^^([a-zA-Z\u0080-\u024F]{1}[a-zA-Z\u0080-\u024F\. |\-| |']*[a-zA-Z\u0080-\u024F\.']{1})$/.test(
+                value
+            );
         };
         const regExEmail = (value) => {
             return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(value);
@@ -194,7 +196,7 @@ function sendFormLocalStorage() {
         }
         function errorMsgWrong(idValue) {
             document.getElementById(`${idValue}`).textContent =
-                "Veuillez bien remplir ce champ";
+                "Veuillez vérifier ce champ";
         }
 
         // /* Fonctions pour la vérification du formulaire----------------------------
@@ -202,9 +204,11 @@ function sendFormLocalStorage() {
         function controlFirstName() {
             const verifyFirstName = formValues.firstName;
             if (regExName(verifyFirstName)) {
+                console.log("prenom true");
                 errorMsgEmpty("firstNameErrorMsg");
                 return true;
             } else {
+                console.log("prenom false");
                 errorMsgWrong("firstNameErrorMsg");
                 return false;
             }
@@ -214,9 +218,11 @@ function sendFormLocalStorage() {
         function controlLastName() {
             const verifyLastName = formValues.lastName;
             if (regExName(verifyLastName)) {
+                console.log("nom true");
                 errorMsgEmpty("lastNameErrorMsg");
                 return true;
             } else {
+                console.log("nom false");
                 errorMsgWrong("lastNameErrorMsg");
                 return false;
             }
@@ -226,9 +232,11 @@ function sendFormLocalStorage() {
         function controlAddress() {
             const verifyAddress = formValues.address;
             if (regExAddress(verifyAddress)) {
+                console.log("address true");
                 errorMsgEmpty("addressErrorMsg");
                 return true;
             } else {
+                console.log("address false");
                 errorMsgWrong("addressErrorMsg");
                 return false;
             }
@@ -238,9 +246,11 @@ function sendFormLocalStorage() {
         function controlCity() {
             const verifyCity = formValues.city;
             if (regExCity(verifyCity)) {
+                console.log("city true");
                 errorMsgEmpty("cityErrorMsg");
                 return true;
             } else {
+                console.log("city false");
                 errorMsgWrong("cityErrorMsg");
                 return false;
             }
@@ -250,9 +260,11 @@ function sendFormLocalStorage() {
         function controlEmail() {
             const verifyEmail = formValues.email;
             if (regExEmail(verifyEmail)) {
+                console.log("email true");
                 errorMsgEmpty("emailErrorMsg");
                 return true;
             } else {
+                console.log("email false");
                 errorMsgWrong("emailErrorMsg");
                 return false;
             }
@@ -266,9 +278,44 @@ function sendFormLocalStorage() {
             controlCity()
         ) {
             // Mettre formValues dans le LS
+            console.log("form LS true");
             localStorage.setItem("formValues", JSON.stringify(formValues));
+            postFetch();
         } else {
+            console.log(false);
             alert("formulaire non valide");
+        }
+
+        // /* Envoi de order à l'API
+        function postFetch() {
+            // Création variable pour récupérer les id dans un tableau
+            let productCommand = [];
+
+            for (let i = 0; i < productCartLocalStorage.length; i++) {
+                productCommand.push(productCartLocalStorage[i].idCart);
+            }
+
+            const sendUserCommand = { formValues, productCommand };
+
+            const postApiCommand = {
+                method: "POST",
+                body: JSON.stringify(sendUserCommand),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            };
+
+            fetch("http://localhost:3000/api/products/order", {
+                postApiCommand,
+            }).then(async (response) => {
+                try {
+                    const dataCommand = await response.json();
+                    window.location.href = `confirmation.html?id=${dataCommand.orderId}`;
+                    localStorage.clear();
+                } catch (e) {
+                    alert("Problème avec fetch : " + err.message);
+                }
+            });
         }
     });
 }
