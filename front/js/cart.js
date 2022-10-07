@@ -48,12 +48,14 @@ function totalPriceQuantity() {
     // Quantité Total
     let totalQuantityCart = 0;
 
-    // Boucle pour allé chercher les quantités et les concaténés avec +=
-    for (let i = 0; i < productCartLocalStorage.length; i++) {
-        totalQuantityCart += productCartLocalStorage[i].quantityCart;
-        console.log(totalQuantityCart);
+    if (productCartLocalStorage == null) {
+    } else {
+        // Boucle pour allé chercher les quantités et les concaténés avec +=
+        for (let i = 0; i < productCartLocalStorage.length; i++) {
+            totalQuantityCart += productCartLocalStorage[i].quantityCart;
+            console.log(totalQuantityCart);
+        }
     }
-
     // On implémente dans l'HTML la valeur
     const totalQuantity = document.getElementById("totalQuantity");
     totalQuantity.innerHTML = totalQuantityCart;
@@ -61,14 +63,16 @@ function totalPriceQuantity() {
     // Prix Total
     let totalPriceCart = 0;
 
-    // Boucle pour allé chercher les prix et les concaténés avec +=
-    for (let i = 0; i < productCartLocalStorage.length; i++) {
-        totalPriceCart +=
-            productCartLocalStorage[i].quantityCart *
-            productCartLocalStorage[i].prixCart;
-        console.log(totalPriceCart);
+    if (productCartLocalStorage == null) {
+    } else {
+        // Boucle pour allé chercher les prix et les concaténés avec +=
+        for (let i = 0; i < productCartLocalStorage.length; i++) {
+            totalPriceCart +=
+                productCartLocalStorage[i].quantityCart *
+                productCartLocalStorage[i].prixCart;
+            console.log(totalPriceCart);
+        }
     }
-
     // On implémente dans l'HTML la valeur
     const totalPrice = document.getElementById("totalPrice");
     totalPrice.innerHTML = totalPriceCart;
@@ -289,27 +293,37 @@ function sendFormLocalStorage() {
         // /* Envoi de order à l'API
         function postFetch() {
             // Création variable pour récupérer les id dans un tableau
-            let productCommand = [];
+            let productId = [];
 
             for (let i = 0; i < productCartLocalStorage.length; i++) {
-                productCommand.push(productCartLocalStorage[i].idCart);
+                productId.push(productCartLocalStorage[i].idCart);
             }
 
-            const sendUserCommand = { formValues, productCommand };
-
-            const postApiCommand = {
-                method: "POST",
-                body: JSON.stringify(sendUserCommand),
-                headers: {
-                    "Content-Type": "application/json",
+            let orderUser = {
+                contact: {
+                    firstName: firstName.value,
+                    lastName: lastName.value,
+                    address: address.value,
+                    city: city.value,
+                    email: email.value,
                 },
+                products: productId,
             };
 
+            console.log(orderUser);
+
             fetch("http://localhost:3000/api/products/order", {
-                postApiCommand,
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(orderUser),
             }).then(async (response) => {
+                console.log(response);
                 try {
                     const dataCommand = await response.json();
+                    console.log(dataCommand.orderId);
                     window.location.href = `confirmation.html?id=${dataCommand.orderId}`;
                     localStorage.clear();
                 } catch (e) {
