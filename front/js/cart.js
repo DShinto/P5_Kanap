@@ -178,7 +178,7 @@ function sendFormLocalStorage() {
         }
         function errorMsgWrong(idValue) {
             document.getElementById(`${idValue}`).textContent =
-                "Veuillez vérifier ce champ";
+                "Veuillez vérifier ce champ !";
         }
 
         // /* Fonctions pour la vérification du formulaire----------------------------
@@ -253,7 +253,7 @@ function sendFormLocalStorage() {
             localStorage.setItem("formValues", JSON.stringify(formValues));
             postFetch();
         } else {
-            alert("formulaire non valide");
+            alert("formulaire non valide !");
         }
         //------------------------------------------------------------
         // /* Envoi de order à l'API

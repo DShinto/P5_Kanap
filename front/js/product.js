@@ -61,10 +61,10 @@ buttonAddCart.addEventListener("click", (event) => {
 
     console.log(colorEvent);
     if (colorEvent == 0) {
-        alert("Veuillez choisir une couleur");
+        alert("Veuillez choisir une couleur !");
     }
     if (quantityEvent < 1 || quantityEvent > 100) {
-        alert("Veuillez choisir une quantité entre 0 et 100");
+        alert("Veuillez choisir une quantité entre 0 et 100 !");
     }
 
     if (
@@ -114,11 +114,11 @@ buttonAddCart.addEventListener("click", (event) => {
                     "produit",
                     JSON.stringify(productCartLocalStorage)
                 );
-                alert("Votre commande à bien été ajouté au panier");
+                alert("Votre commande à bien été ajouté au panier !");
                 // Si le produit commandé n'est pas dans le panier
             } else {
                 addProductLocaltorage();
-                alert("Votre commande à bien été ajouté au panier");
+                alert("Votre commande à bien été ajouté au panier !");
             }
             // Si le panier est vide
         } else {
