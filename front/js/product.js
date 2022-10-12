@@ -60,6 +60,12 @@ buttonAddCart.addEventListener("click", (event) => {
     let quantityEvent = document.querySelector("#quantity").value;
 
     console.log(colorEvent);
+    if (colorEvent == 0) {
+        alert("Veuillez choisir une couleur");
+    }
+    if (quantityEvent < 1 || quantityEvent > 100) {
+        alert("Veuillez choisir une quantité entre 0 et 100");
+    }
 
     if (
         quantityEvent > 0 &&
@@ -72,11 +78,6 @@ buttonAddCart.addEventListener("click", (event) => {
             idCart: canapeId,
             colorCart: colorEvent,
             quantityCart: Number(quantityEvent),
-            nomCart: data.name,
-            prixCart: data.price,
-            descriptionCart: data.description,
-            imgCart: data.imageUrl,
-            altTxtCart: data.altTxt,
         };
 
         // /! stocker la récupération des valeurs dans le local storage
@@ -113,12 +114,12 @@ buttonAddCart.addEventListener("click", (event) => {
                     "produit",
                     JSON.stringify(productCartLocalStorage)
                 );
-
+                alert("Votre commande à bien été ajouté au panier");
                 // Si le produit commandé n'est pas dans le panier
             } else {
                 addProductLocaltorage();
+                alert("Votre commande à bien été ajouté au panier");
             }
-
             // Si le panier est vide
         } else {
             productCartLocalStorage = [];
